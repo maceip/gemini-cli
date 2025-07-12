@@ -14,7 +14,7 @@ import {
   GoogleGenAI,
 } from '@google/genai';
 import { findIndexAfterFraction, GeminiClient } from './client.js';
-import { AuthType, ContentGenerator } from './contentGenerator.js';
+import { AuthType, ContentGenerator, GeminiConfig } from './contentGenerator.js';
 import { GeminiChat } from './geminiChat.js';
 import { Config } from '../config/config.js';
 import { GeminiEventType, Turn } from './turn.js';
@@ -171,7 +171,7 @@ describe('Gemini Client (client.ts)', () => {
     };
     const fileService = new FileDiscoveryService('/test/dir');
     const MockedConfig = vi.mocked(Config, true);
-    const contentGeneratorConfig = {
+    const contentGeneratorConfig: GeminiConfig = {
       model: 'test-model',
       apiKey: 'test-key',
       vertexai: false,

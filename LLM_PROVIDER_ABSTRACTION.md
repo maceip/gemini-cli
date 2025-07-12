@@ -10,8 +10,12 @@ The codebase currently uses a `ContentGenerator` interface that abstracts Google
 
 ```typescript
 export interface ContentGenerator {
-  generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse>;
-  generateContentStream(request: GenerateContentParameters): Promise<AsyncGenerator<GenerateContentResponse>>;
+  generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse>;
+  generateContentStream(
+    request: GenerateContentParameters,
+  ): Promise<AsyncGenerator<GenerateContentResponse>>;
   countTokens(request: CountTokensParameters): Promise<CountTokensResponse>;
   embedContent(request: EmbedContentParameters): Promise<EmbedContentResponse>;
   getTier?(): Promise<UserTierId | undefined>;
@@ -22,27 +26,27 @@ export interface ContentGenerator {
 
 ### Message Format Differences
 
-| Provider | Role Types | Message Structure |
-|----------|-----------|-------------------|
-| Gemini | `user`, `model` | `{ role, parts: [{ text }, { functionCall }, ...] }` |
-| OpenAI | `system`, `user`, `assistant`, `tool` | `{ role, content: string \| parts[], tool_calls?: [...] }` |
-| Ollama | Same as OpenAI | OpenAI-compatible or native format |
+| Provider | Role Types                            | Message Structure                                          |
+| -------- | ------------------------------------- | ---------------------------------------------------------- |
+| Gemini   | `user`, `model`                       | `{ role, parts: [{ text }, { functionCall }, ...] }`       |
+| OpenAI   | `system`, `user`, `assistant`, `tool` | `{ role, content: string \| parts[], tool_calls?: [...] }` |
+| Ollama   | Same as OpenAI                        | OpenAI-compatible or native format                         |
 
 ### Tool/Function Calling
 
-| Provider | Tool Definition | Response Format |
-|----------|----------------|-----------------|
-| Gemini | `FunctionDeclaration` with parameters schema | `functionCall` in parts |
-| OpenAI | JSON Schema with parameters | `tool_calls` array in response |
-| Ollama | OpenAI-compatible format | `tool_calls` in message |
+| Provider | Tool Definition                              | Response Format                |
+| -------- | -------------------------------------------- | ------------------------------ |
+| Gemini   | `FunctionDeclaration` with parameters schema | `functionCall` in parts        |
+| OpenAI   | JSON Schema with parameters                  | `tool_calls` array in response |
+| Ollama   | OpenAI-compatible format                     | `tool_calls` in message        |
 
 ### Streaming
 
-| Provider | Stream Format | Chunk Type |
-|----------|--------------|------------|
-| Gemini | AsyncGenerator | Complete response objects |
-| OpenAI | Server-Sent Events | Delta chunks requiring accumulation |
-| Ollama | SSE (OpenAI mode) or JSON stream | Delta or complete chunks |
+| Provider | Stream Format                    | Chunk Type                          |
+| -------- | -------------------------------- | ----------------------------------- |
+| Gemini   | AsyncGenerator                   | Complete response objects           |
+| OpenAI   | Server-Sent Events               | Delta chunks requiring accumulation |
+| Ollama   | SSE (OpenAI mode) or JSON stream | Delta or complete chunks            |
 
 ## Proposed Architecture
 
@@ -55,7 +59,7 @@ export enum AuthType {
   USE_GEMINI = 'gemini-api-key',
   USE_VERTEX_AI = 'vertex-ai',
   CLOUD_SHELL = 'cloud-shell',
-  
+
   // New providers
   USE_OPENAI = 'openai-api-key',
   USE_OPENAI_COMPATIBLE = 'openai-compatible', // For any OpenAI-compatible API
@@ -106,21 +110,29 @@ interface OpenAICompatibleConfig extends BaseProviderConfig {
 abstract class BaseContentGenerator implements ContentGenerator {
   protected config: BaseProviderConfig;
   protected httpClient: HttpClient;
-  
+
   constructor(config: BaseProviderConfig) {
     this.config = config;
     this.httpClient = this.createHttpClient();
   }
-  
-  abstract generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse>;
-  abstract generateContentStream(request: GenerateContentParameters): Promise<AsyncGenerator<GenerateContentResponse>>;
-  abstract countTokens(request: CountTokensParameters): Promise<CountTokensResponse>;
-  abstract embedContent(request: EmbedContentParameters): Promise<EmbedContentResponse>;
-  
+
+  abstract generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse>;
+  abstract generateContentStream(
+    request: GenerateContentParameters,
+  ): Promise<AsyncGenerator<GenerateContentResponse>>;
+  abstract countTokens(
+    request: CountTokensParameters,
+  ): Promise<CountTokensResponse>;
+  abstract embedContent(
+    request: EmbedContentParameters,
+  ): Promise<EmbedContentResponse>;
+
   getTier?(): Promise<UserTierId | undefined> {
     return Promise.resolve(undefined);
   }
-  
+
   protected abstract createHttpClient(): HttpClient;
 }
 ```
@@ -130,27 +142,40 @@ abstract class BaseContentGenerator implements ContentGenerator {
 ```typescript
 class OpenAIContentGenerator extends BaseContentGenerator {
   private converter: OpenAIConverter;
-  
+
   constructor(config: OpenAIConfig) {
     super(config);
     this.converter = new OpenAIConverter();
   }
-  
-  async generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse> {
+
+  async generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse> {
     const openAIRequest = this.converter.toOpenAIRequest(request);
-    const response = await this.httpClient.post('/chat/completions', openAIRequest);
+    const response = await this.httpClient.post(
+      '/chat/completions',
+      openAIRequest,
+    );
     return this.converter.fromOpenAIResponse(response);
   }
-  
-  async *generateContentStream(request: GenerateContentParameters): AsyncGenerator<GenerateContentResponse> {
-    const openAIRequest = { ...this.converter.toOpenAIRequest(request), stream: true };
-    const stream = await this.httpClient.postStream('/chat/completions', openAIRequest);
-    
+
+  async *generateContentStream(
+    request: GenerateContentParameters,
+  ): AsyncGenerator<GenerateContentResponse> {
+    const openAIRequest = {
+      ...this.converter.toOpenAIRequest(request),
+      stream: true,
+    };
+    const stream = await this.httpClient.postStream(
+      '/chat/completions',
+      openAIRequest,
+    );
+
     for await (const chunk of this.parseSSEStream(stream)) {
       yield this.converter.fromOpenAIStreamChunk(chunk);
     }
   }
-  
+
   // Additional methods...
 }
 ```
@@ -161,14 +186,16 @@ class OpenAIContentGenerator extends BaseContentGenerator {
 class OllamaContentGenerator extends BaseContentGenerator {
   private converter: OllamaConverter;
   private useOpenAIMode: boolean;
-  
+
   constructor(config: OllamaConfig) {
     super(config);
     this.useOpenAIMode = config.useOpenAICompatible ?? true;
     this.converter = new OllamaConverter(this.useOpenAIMode);
   }
-  
-  async generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse> {
+
+  async generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse> {
     if (this.useOpenAIMode) {
       // Use OpenAI-compatible endpoint
       return this.callOpenAICompatible(request);
@@ -177,19 +204,23 @@ class OllamaContentGenerator extends BaseContentGenerator {
       return this.callNativeOllama(request);
     }
   }
-  
-  private async callOpenAICompatible(request: GenerateContentParameters): Promise<GenerateContentResponse> {
+
+  private async callOpenAICompatible(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse> {
     const endpoint = `${this.config.endpoint}/v1/chat/completions`;
     // Similar to OpenAI implementation
   }
-  
-  private async callNativeOllama(request: GenerateContentParameters): Promise<GenerateContentResponse> {
+
+  private async callNativeOllama(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse> {
     const endpoint = `${this.config.endpoint}/api/chat`;
     const ollamaRequest = this.converter.toOllamaRequest(request);
     const response = await this.httpClient.post(endpoint, ollamaRequest);
     return this.converter.fromOllamaResponse(response);
   }
-  
+
   // Streaming, embeddings, etc.
 }
 ```
@@ -211,82 +242,89 @@ class OpenAIConverter {
       stream: false,
     };
   }
-  
+
   private convertMessages(contents: Content[]): OpenAIMessage[] {
-    return contents.map(content => {
+    return contents.map((content) => {
       const role = this.mapRole(content.role);
       const message: OpenAIMessage = { role };
-      
+
       if (content.parts.length === 1 && content.parts[0].text) {
         message.content = content.parts[0].text;
       } else {
         message.content = this.convertParts(content.parts);
       }
-      
+
       // Handle function responses
-      if (content.parts.some(p => p.functionResponse)) {
+      if (content.parts.some((p) => p.functionResponse)) {
         message.role = 'tool';
-        message.tool_call_id = content.parts.find(p => p.functionResponse)?.functionResponse?.name;
+        message.tool_call_id = content.parts.find(
+          (p) => p.functionResponse,
+        )?.functionResponse?.name;
       }
-      
+
       return message;
     });
   }
-  
+
   private mapRole(geminiRole: string): OpenAIRole {
     switch (geminiRole) {
-      case 'user': return 'user';
-      case 'model': return 'assistant';
-      default: return 'user';
+      case 'user':
+        return 'user';
+      case 'model':
+        return 'assistant';
+      default:
+        return 'user';
     }
   }
-  
+
   private convertTools(tools: FunctionDeclaration[]): OpenAITool[] {
-    return tools.map(tool => ({
+    return tools.map((tool) => ({
       type: 'function',
       function: {
         name: tool.name,
         description: tool.description,
         parameters: tool.parameters as any, // Already JSON Schema
-      }
+      },
     }));
   }
-  
+
   fromOpenAIResponse(response: OpenAIResponse): GenerateContentResponse {
     const message = response.choices[0].message;
     const parts: Part[] = [];
-    
+
     if (message.content) {
       parts.push({ text: message.content });
     }
-    
+
     if (message.tool_calls) {
-      message.tool_calls.forEach(toolCall => {
+      message.tool_calls.forEach((toolCall) => {
         parts.push({
           functionCall: {
             name: toolCall.function.name,
             args: JSON.parse(toolCall.function.arguments),
-          }
+          },
         });
       });
     }
-    
+
     return {
-      candidates: [{
-        content: {
-          role: 'model',
-          parts,
+      candidates: [
+        {
+          content: {
+            role: 'model',
+            parts,
+          },
+          finishReason: this.mapFinishReason(response.choices[0].finish_reason),
         },
-        finishReason: this.mapFinishReason(response.choices[0].finish_reason),
-      }],
+      ],
       usageMetadata: {
         promptTokenCount: response.usage?.prompt_tokens || 0,
         candidatesTokenCount: response.usage?.completion_tokens || 0,
         totalTokenCount: response.usage?.total_tokens || 0,
-      }
+      },
     };
   }
-  
+
   // Stream handling...
   fromOpenAIStreamChunk(chunk: OpenAIStreamChunk): GenerateContentResponse {
     // Accumulate deltas and convert to Gemini format
@@ -305,7 +343,7 @@ export async function createContentGenerator(
   switch (config.authType) {
     case AuthType.USE_GEMINI:
       return createGeminiContentGenerator(config, gcConfig);
-      
+
     case AuthType.USE_OPENAI:
       return new OpenAIContentGenerator({
         authType: AuthType.USE_OPENAI,
@@ -314,7 +352,7 @@ export async function createContentGenerator(
         endpoint: 'https://api.openai.com/v1',
         ...config,
       });
-      
+
     case AuthType.USE_OLLAMA:
       return new OllamaContentGenerator({
         authType: AuthType.USE_OLLAMA,
@@ -324,7 +362,7 @@ export async function createContentGenerator(
         contextWindow: 32768, // Recommended for tools
         ...config,
       });
-      
+
     case AuthType.USE_OPENAI_COMPATIBLE:
       return new OpenAICompatibleContentGenerator({
         authType: AuthType.USE_OPENAI_COMPATIBLE,
@@ -333,7 +371,7 @@ export async function createContentGenerator(
         model: config.model,
         ...config,
       });
-      
+
     // Existing cases...
     default:
       throw new Error(`Unsupported auth type: ${config.authType}`);
@@ -351,7 +389,12 @@ const providers = [
   { value: 'gemini', label: 'Google Gemini', requiresKey: true },
   { value: 'openai', label: 'OpenAI', requiresKey: true },
   { value: 'ollama', label: 'Ollama (Local)', requiresKey: false },
-  { value: 'openai-compatible', label: 'OpenAI Compatible', requiresKey: true, requiresEndpoint: true },
+  {
+    value: 'openai-compatible',
+    label: 'OpenAI Compatible',
+    requiresKey: true,
+    requiresEndpoint: true,
+  },
 ];
 
 // Provider-specific configuration
@@ -388,30 +431,35 @@ function mapModelName(provider: string, geminiModel: string): string {
 ## Implementation Strategy
 
 ### Phase 1: Core Abstraction (Week 1)
+
 1. Create base classes and interfaces
 2. Implement message/tool converters
 3. Update factory pattern
 4. Add provider configuration types
 
 ### Phase 2: OpenAI Implementation (Week 2)
+
 1. Implement OpenAIContentGenerator
 2. Handle streaming with SSE
 3. Test tool calling
 4. Add error handling
 
 ### Phase 3: Ollama Implementation (Week 3)
+
 1. Implement OllamaContentGenerator
 2. Support both native and OpenAI modes
 3. Add local endpoint detection
 4. Test with popular models
 
 ### Phase 4: UI Integration (Week 4)
+
 1. Update authentication flow
 2. Add provider selection UI
 3. Model name mapping
 4. Settings persistence
 
 ### Phase 5: Testing & Polish (Week 5)
+
 1. Cross-provider testing
 2. Performance optimization
 3. Error handling improvements

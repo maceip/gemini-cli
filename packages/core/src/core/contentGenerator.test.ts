@@ -9,10 +9,12 @@ import {
   createContentGenerator,
   AuthType,
   createContentGeneratorConfig,
+  GeminiConfig,
 } from './contentGenerator.js';
 import { createCodeAssistContentGenerator } from '../code_assist/codeAssist.js';
 import { GoogleGenAI } from '@google/genai';
 import { Config } from '../config/config.js';
+import { GeminiContentGenerator } from '../providers/gemini/geminiProvider.js';
 
 vi.mock('../code_assist/codeAssist.js');
 vi.mock('@google/genai');
@@ -58,7 +60,7 @@ describe('createContentGenerator', () => {
         },
       },
     });
-    expect(generator).toBe((mockGenerator as GoogleGenAI).models);
+    expect(generator).toBeInstanceOf(GeminiContentGenerator);
   });
 });
 
@@ -84,7 +86,7 @@ describe('createContentGeneratorConfig', () => {
       AuthType.USE_GEMINI,
     );
     expect(config.apiKey).toBe('env-gemini-key');
-    expect(config.vertexai).toBe(false);
+    expect((config as GeminiConfig).vertexai).toBe(false);
   });
 
   it('should not configure for Gemini if GEMINI_API_KEY is empty', async () => {
@@ -94,7 +96,7 @@ describe('createContentGeneratorConfig', () => {
       AuthType.USE_GEMINI,
     );
     expect(config.apiKey).toBeUndefined();
-    expect(config.vertexai).toBeUndefined();
+    expect((config as GeminiConfig).vertexai).toBeUndefined();
   });
 
   it('should configure for Vertex AI using GOOGLE_API_KEY when set', async () => {
@@ -104,7 +106,7 @@ describe('createContentGeneratorConfig', () => {
       AuthType.USE_VERTEX_AI,
     );
     expect(config.apiKey).toBe('env-google-key');
-    expect(config.vertexai).toBe(true);
+    expect((config as GeminiConfig).vertexai).toBe(true);
   });
 
   it('should configure for Vertex AI using GCP project and location when set', async () => {
@@ -114,7 +116,7 @@ describe('createContentGeneratorConfig', () => {
       undefined,
       AuthType.USE_VERTEX_AI,
     );
-    expect(config.vertexai).toBe(true);
+    expect((config as GeminiConfig).vertexai).toBe(true);
     expect(config.apiKey).toBeUndefined();
   });
 
@@ -127,6 +129,6 @@ describe('createContentGeneratorConfig', () => {
       AuthType.USE_VERTEX_AI,
     );
     expect(config.apiKey).toBeUndefined();
-    expect(config.vertexai).toBeUndefined();
+    expect((config as GeminiConfig).vertexai).toBeUndefined();
   });
 });
