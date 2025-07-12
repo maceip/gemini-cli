@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+}
+
+.terminal {
+  flex: 1;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+/* Override xterm.js styles for better integration */
+.terminal :global(.xterm) {
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.terminal :global(.xterm-viewport) {
+  background-color: transparent !important;
+}
+
+.terminal :global(.xterm-screen) {
+  height: 100% !important;
+}

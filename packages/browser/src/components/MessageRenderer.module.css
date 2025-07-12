@@ -1,0 +1,104 @@
+.userMessage,
+.assistantMessage {
+  margin-bottom: 1rem;
+}
+
+.messageHeader {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.userMessage .messageHeader {
+  color: var(--accent-primary);
+}
+
+.assistantMessage .messageHeader {
+  color: var(--accent-secondary);
+}
+
+.messageContent {
+  line-height: 1.6;
+}
+
+/* Markdown styles */
+.messageContent h1,
+.messageContent h2,
+.messageContent h3,
+.messageContent h4,
+.messageContent h5,
+.messageContent h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.messageContent p {
+  margin-bottom: 0.5rem;
+}
+
+.messageContent pre {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.messageContent code {
+  background: var(--bg-tertiary);
+  padding: 0.125rem 0.25rem;
+  border-radius: 3px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 0.875em;
+}
+
+.messageContent pre code {
+  background: none;
+  padding: 0;
+}
+
+.messageContent ul,
+.messageContent ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.messageContent li {
+  margin-bottom: 0.25rem;
+}
+
+.messageContent blockquote {
+  border-left: 4px solid var(--border);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--text-secondary);
+}
+
+.messageContent a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.messageContent a:hover {
+  text-decoration: underline;
+}
+
+.messageContent table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.messageContent th,
+.messageContent td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.messageContent th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+}

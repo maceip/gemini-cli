@@ -67,6 +67,58 @@ The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/gene
 
 For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
 
+### Use alternative LLM providers:
+
+The Gemini CLI now supports any OpenAI-compatible API and local serving via Ollama, allowing you to use a wide variety of language models:
+
+#### OpenAI API:
+
+1. Get an API key from [OpenAI](https://platform.openai.com/api-keys)
+2. Set it as an environment variable:
+
+   ```bash
+   export OPENAI_API_KEY="YOUR_API_KEY"
+   export GOOGLE_GENAI_USE_OPENAI=true
+   ```
+
+3. (Optional) Specify a model:
+
+   ```bash
+   export GOOGLE_GENAI_MODEL="gpt-4-turbo-preview"
+   ```
+
+#### Local serving with Ollama:
+
+1. Install [Ollama](https://ollama.ai) and download a model:
+
+   ```bash
+   ollama pull llama3.1
+   ```
+
+2. Set the environment variable:
+
+   ```bash
+   export GOOGLE_GENAI_USE_OLLAMA=true
+   ```
+
+3. (Optional) Specify a different model or endpoint:
+
+   ```bash
+   export GOOGLE_GENAI_MODEL="llama3.1:70b"
+   export GOOGLE_GENAI_OLLAMA_ENDPOINT="http://localhost:11434"
+   ```
+
+#### Any OpenAI-compatible API:
+
+For other providers that offer OpenAI-compatible endpoints (e.g., Groq, Together AI, Anyscale):
+
+```bash
+export GOOGLE_GENAI_USE_OPENAI_COMPATIBLE=true
+export GOOGLE_GENAI_ENDPOINT="https://api.your-provider.com/v1"
+export GOOGLE_GENAI_API_KEY="YOUR_API_KEY"
+export GOOGLE_GENAI_MODEL="your-model-name"
+```
+
 ## Examples
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
