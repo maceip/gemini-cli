@@ -76,6 +76,31 @@ The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/gene
 
 3. (Optionally) Add a billing account on your project to get access to [higher usage limits](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
 
+### Use an OpenAI API key:
+
+The Gemini CLI now supports OpenAI models as an alternative backend. This allows you to use GPT-4, GPT-4o, and other OpenAI models:
+
+1. Generate an API key from [OpenAI Platform](https://platform.openai.com/api-keys).
+2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key:
+
+   ```bash
+   export OPENAI_API_KEY="YOUR_API_KEY"
+   ```
+
+3. When running the CLI, specify the OpenAI model you want to use:
+
+   ```bash
+   gemini --model openai:gpt-4o
+   ```
+
+   Available OpenAI models include:
+   - `openai:gpt-4o` - GPT-4 Optimized (recommended)
+   - `openai:gpt-4o-mini` - GPT-4 Optimized Mini (faster, cheaper)
+   - `openai:gpt-4-turbo` - GPT-4 Turbo
+   - `openai:gpt-3.5-turbo` - GPT-3.5 Turbo (fastest, cheapest)
+
+Note: When using OpenAI models, some Gemini-specific features like Google Search grounding may not be available.
+
 For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
 
 ## Examples
