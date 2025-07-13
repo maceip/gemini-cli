@@ -132,12 +132,9 @@ export class WriteFileToolAbstract extends BaseTool<WriteFileToolParams, ToolRes
       recordFileOperationMetric(
         this.config,
         FileOperation.WRITE,
-        Buffer.byteLength(params.content, 'utf-8'),
-        false,
-        {
-          file_exists: fileExists.toString(),
-          duration_ms: Date.now() - startTime,
-        },
+        params.content.split('\n').length,
+        'text/plain',
+        this.fs.extname(params.absolute_path),
       );
 
       return {
@@ -151,13 +148,9 @@ export class WriteFileToolAbstract extends BaseTool<WriteFileToolParams, ToolRes
       recordFileOperationMetric(
         this.config,
         FileOperation.WRITE,
-        Buffer.byteLength(params.content, 'utf-8'),
-        true,
-        {
-          file_exists: fileExists.toString(),
-          error: errorMessage,
-          duration_ms: Date.now() - startTime,
-        },
+        params.content.split('\n').length,
+        'text/plain',
+        this.fs.extname(params.absolute_path),
       );
 
       return {

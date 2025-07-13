@@ -2,7 +2,7 @@
  * Browser shim for Node.js path module
  */
 
-import { PlatformFactory } from '@gemini-cli/core/src/platform/index.js';
+import { PlatformFactory } from '@google/gemini-cli-core/src/platform/index.js';
 
 const platform = PlatformFactory.create();
 const fileSystem = platform.createFileSystem();

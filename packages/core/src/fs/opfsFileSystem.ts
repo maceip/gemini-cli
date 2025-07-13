@@ -142,6 +142,7 @@ export class OPFSFileSystem implements FileSystem {
     }
 
     const entries: string[] = [];
+    // @ts-ignore - values() is available on FileSystemDirectoryHandle
     for await (const entry of (handle as FileSystemDirectoryHandle).values()) {
       entries.push(entry.name);
     }

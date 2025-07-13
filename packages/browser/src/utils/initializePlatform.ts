@@ -1,5 +1,5 @@
-import { PlatformFactory } from '@gemini-cli/core/src/platform/index.js';
-import { OPFSFileSystem } from '@gemini-cli/core/src/fs/opfsFileSystem.js';
+import { PlatformFactory } from '@google/gemini-cli-core/src/platform/index.js';
+import { OPFSFileSystem } from '@google/gemini-cli-core/src/fs/opfsFileSystem.js';
 
 export async function initializePlatform(): Promise<void> {
   // Check for required browser features

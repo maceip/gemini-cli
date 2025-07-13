@@ -48,6 +48,16 @@ interface GrepMatch {
   line: string;
 }
 
+/**
+ * Result object for grep operations (for compatibility)
+ */
+export interface GrepResult {
+  file: string;
+  line: number;
+  column: number;
+  match: string;
+}
+
 // --- GrepLogic Class ---
 
 /**

@@ -16,7 +16,9 @@ const execAsync = promisify(exec);
 
 class NodeShell implements Shell {
   private currentDirectory: string = process.cwd();
-  private environment: Record<string, string> = { ...process.env };
+  private environment: Record<string, string> = Object.fromEntries(
+    Object.entries(process.env).filter(([_, value]) => value !== undefined)
+  ) as Record<string, string>;
 
   async execute(command: string, options?: ShellOptions): Promise<ShellResult> {
     try {
@@ -79,7 +81,9 @@ export class NodePlatform implements Platform {
   }
 
   getEnvironment(): Record<string, string> {
-    return { ...process.env };
+    return Object.fromEntries(
+      Object.entries(process.env).filter(([_, value]) => value !== undefined)
+    ) as Record<string, string>;
   }
 
   exit(code: number): void {

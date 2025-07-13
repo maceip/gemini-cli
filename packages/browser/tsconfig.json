@@ -19,7 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@gemini-cli/core": ["../core/src/index.ts"]
+      "@google/gemini-cli-core": ["../core/src/index.ts"]
     }
   },
   "include": ["src"],

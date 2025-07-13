@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       // Node.js module shims
       'fs': resolve(__dirname, 'src/shims/fs.ts'),
+      'fs/promises': resolve(__dirname, 'src/shims/fs-promises.ts'),
       'path': resolve(__dirname, 'src/shims/path.ts'),
       'child_process': resolve(__dirname, 'src/shims/child_process.ts'),
       'os': resolve(__dirname, 'src/shims/os.ts'),
@@ -17,6 +18,7 @@ export default defineConfig({
       'buffer': resolve(__dirname, 'src/shims/buffer.ts'),
       'process': resolve(__dirname, 'src/shims/process.ts'),
       'node:fs': resolve(__dirname, 'src/shims/fs.ts'),
+      'node:fs/promises': resolve(__dirname, 'src/shims/fs-promises.ts'),
       'node:path': resolve(__dirname, 'src/shims/path.ts'),
       'node:child_process': resolve(__dirname, 'src/shims/child_process.ts'),
       'node:os': resolve(__dirname, 'src/shims/os.ts'),
@@ -25,16 +27,17 @@ export default defineConfig({
       'node:buffer': resolve(__dirname, 'src/shims/buffer.ts'),
       'node:process': resolve(__dirname, 'src/shims/process.ts'),
       'node:v8': resolve(__dirname, 'src/shims/v8.ts'),
+      'node:url': resolve(__dirname, 'src/shims/url.ts'),
+      'node:events': resolve(__dirname, 'src/shims/events.ts'),
+      'node:string_decoder': resolve(__dirname, 'src/shims/string_decoder.ts'),
     },
   },
   
   define: {
-    'process.env': {},
+    'process.env': '{}',
     'process.platform': '"browser"',
     'process.version': '"v18.0.0"',
-    'process.versions': '{ node: "18.0.0" }',
-    'process.cwd': '() => "/"',
-    'process.exit': '(code) => console.log("Exit:", code)',
+    'process.versions': JSON.stringify({ node: "18.0.0" }),
     'global': 'globalThis',
   },
   
@@ -46,7 +49,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: [],
+      external: ['glob', 'path-scurry', 'minipass'],
       output: {
         dir: 'dist',
         format: 'es',
@@ -64,6 +67,6 @@ export default defineConfig({
   },
   
   optimizeDeps: {
-    exclude: ['@gemini-cli/core'],
+    exclude: ['@google/gemini-cli-core'],
   },
 });

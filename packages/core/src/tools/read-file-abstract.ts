@@ -157,17 +157,9 @@ export class ReadFileToolAbstract extends BaseTool<ReadFileToolParams, ToolResul
     recordFileOperationMetric(
       this.config,
       FileOperation.READ,
-      size,
-      result.error !== undefined,
-      {
-        file_type: getSpecificMimeType(params.absolute_path) || 'unknown',
-        has_offset: params.offset !== undefined,
-        has_limit: params.limit !== undefined,
-        lines_shown: result.linesShown ? result.linesShown.join('-') : 'N/A',
-        total_lines: result.originalLineCount?.toString() || 'N/A',
-        lines: lines?.toString() || 'N/A',
-        duration_ms: Date.now() - start,
-      },
+      lines || result.originalLineCount,
+      getSpecificMimeType(params.absolute_path) || 'text/plain',
+      this.fs.extname(params.absolute_path),
     );
 
     return {

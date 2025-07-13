@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getFileSystem } from '@gemini-cli/core/src/utils/fileUtilsAbstract.js';
-import { FileSystem } from '@gemini-cli/core/src/fs/types.js';
+import { getFileSystem } from '@google/gemini-cli-core/src/utils/fileUtilsAbstract.js';
+import { FileSystem } from '@google/gemini-cli-core/src/fs/types.js';
 
 interface FileEntry {
   name: string;

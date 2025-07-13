@@ -28,6 +28,7 @@ export enum FileOperation {
   CREATE = 'create',
   READ = 'read',
   UPDATE = 'update',
+  WRITE = 'write',
 }
 
 let cliMeter: Meter | undefined;
