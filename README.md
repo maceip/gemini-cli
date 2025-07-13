@@ -1,8 +1,14 @@
 # Gemini CLI
 
 <div align="center">
-  <img src="./docs/assets/lemoneye.png" alt="L. Eye" width="150" height="150" />
-  <p><em>Enhanced by L. Eye</em></p>
+  <img src="./docs/assets/lemoneye.png" alt="L. Eye" width="100" height="100" />
+  <h3>
+    <span style="color: #FFD700;">u</span><span style="color: #9370DB;">p</span><span style="color: #FFD700;">d</span><span style="color: #9370DB;">a</span><span style="color: #FFD700;">t</span><span style="color: #9370DB;">e</span><span style="color: #FFD700;">s</span><span style="color: #9370DB;"> </span><span style="color: #FFD700;">f</span><span style="color: #9370DB;">r</span><span style="color: #FFD700;">o</span><span style="color: #9370DB;">m</span><span style="color: #FFD700;"> </span><span style="color: #9370DB;">l</span><span style="color: #FFD700;">e</span><span style="color: #9370DB;">m</span><span style="color: #FFD700;">o</span><span style="color: #9370DB;">n</span><span style="color: #FFD700;">c</span><span style="color: #9370DB;">a</span><span style="color: #FFD700;">t</span><span style="color: #9370DB;">:</span>
+  </h3>
+  <ul style="text-align: left; display: inline-block;">
+    <li>added generic inference backend (oai, local serving)</li>
+    <li>gemini-cli can now be ran in-browser using OPFS</li>
+  </ul>
 </div>
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
@@ -21,14 +27,6 @@ With the Gemini CLI you can:
   Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
 - Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
   tool, built in to Gemini.
-
-## [Web] Browser Edition
-
-Run Gemini CLI entirely in your web browser with no installation required. Features persistent file storage using Origin Private File System (OPFS) and a full terminal experience powered by xterm.js. Works on any modern browser (Chrome 86+, Edge 86+, Safari 15.2+) with complete offline capability.
-
-## [LLM Inference Adapter]
-
-Support for multiple LLM providers through a unified interface. Connect to OpenAI, Anthropic Claude, local Ollama instances, or any OpenAI-compatible API endpoint. Seamlessly switch between providers while maintaining the same powerful Gemini CLI experience and tooling.
 
 ## Quickstart
 
