@@ -1,11 +1,16 @@
 # Gemini CLI
 
+<div align="center">
+  <img src="./docs/assets/lemoneye.png" alt="L. Eye" width="150" height="150" />
+  <p><em>Enhanced by L. Eye</em></p>
+</div>
+
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 
 ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
 This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows. **Now also available as a browser-based application!**
+tools, understands your code and accelerates your workflows.
 
 With the Gemini CLI you can:
 
@@ -16,11 +21,16 @@ With the Gemini CLI you can:
   Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
 - Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
   tool, built in to Gemini.
-- **[New]** Run entirely in your web browser with persistent file storage using the Origin Private File System (OPFS).
+
+## [Web] Browser Edition
+
+Run Gemini CLI entirely in your web browser with no installation required. Features persistent file storage using Origin Private File System (OPFS) and a full terminal experience powered by xterm.js. Works on any modern browser (Chrome 86+, Edge 86+, Safari 15.2+) with complete offline capability.
+
+## [LLM Inference Adapter]
+
+Support for multiple LLM providers through a unified interface. Connect to OpenAI, Anthropic Claude, local Ollama instances, or any OpenAI-compatible API endpoint. Seamlessly switch between providers while maintaining the same powerful Gemini CLI experience and tooling.
 
 ## Quickstart
-
-### Option 1: Command Line Interface (CLI)
 
 1. **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
 2. **Run the CLI:** Execute the following command in your terminal:
@@ -40,28 +50,6 @@ With the Gemini CLI you can:
 4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
 
 You are now ready to use the Gemini CLI!
-
-### Option 2: Browser Edition (No Installation Required)
-
-1. **Prerequisites:** A modern browser (Chrome 86+, Edge 86+, Safari 15.2+)
-2. **Access:** Visit the hosted version or run locally:
-
-   ```bash
-   git clone https://github.com/google-gemini/gemini-cli
-   cd gemini-cli/packages/browser
-   npm install
-   npm run dev
-   ```
-
-3. **Open:** Navigate to http://localhost:3000 in your browser
-4. **Configure:** Add your Gemini API key in the settings
-
-The browser edition provides:
-- 🌐 No server or installation required
-- 📁 Persistent file storage using OPFS
-- 🖥️ Full terminal experience with xterm.js
-- 🎨 Dark and light theme support
-- 📝 Rich markdown rendering with syntax highlighting
 
 ### Use a Gemini API key:
 
@@ -92,58 +80,6 @@ The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/gene
 
 For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
 
-### Use alternative LLM providers:
-
-The Gemini CLI now supports any OpenAI-compatible API and local serving via Ollama, allowing you to use a wide variety of language models:
-
-#### OpenAI API:
-
-1. Get an API key from [OpenAI](https://platform.openai.com/api-keys)
-2. Set it as an environment variable:
-
-   ```bash
-   export OPENAI_API_KEY="YOUR_API_KEY"
-   export GOOGLE_GENAI_USE_OPENAI=true
-   ```
-
-3. (Optional) Specify a model:
-
-   ```bash
-   export GOOGLE_GENAI_MODEL="gpt-4-turbo-preview"
-   ```
-
-#### Local serving with Ollama:
-
-1. Install [Ollama](https://ollama.ai) and download a model:
-
-   ```bash
-   ollama pull llama3.1
-   ```
-
-2. Set the environment variable:
-
-   ```bash
-   export GOOGLE_GENAI_USE_OLLAMA=true
-   ```
-
-3. (Optional) Specify a different model or endpoint:
-
-   ```bash
-   export GOOGLE_GENAI_MODEL="llama3.1:70b"
-   export GOOGLE_GENAI_OLLAMA_ENDPOINT="http://localhost:11434"
-   ```
-
-#### Any OpenAI-compatible API:
-
-For other providers that offer OpenAI-compatible endpoints (e.g., Groq, Together AI, Anyscale):
-
-```bash
-export GOOGLE_GENAI_USE_OPENAI_COMPATIBLE=true
-export GOOGLE_GENAI_ENDPOINT="https://api.your-provider.com/v1"
-export GOOGLE_GENAI_API_KEY="YOUR_API_KEY"
-export GOOGLE_GENAI_MODEL="your-model-name"
-```
-
 ## Examples
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
@@ -169,7 +105,6 @@ gemini
 
 - Learn how to [contribute to or build from the source](./CONTRIBUTING.md).
 - Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- Try the **[Browser Edition](./packages/browser/README.md)** for a web-based experience.
 - If you encounter any issues, review the **[Troubleshooting guide](./docs/troubleshooting.md)**.
 - For more comprehensive documentation, see the [full documentation](./docs/index.md).
 - Take a look at some [popular tasks](#popular-tasks) for more inspiration.
@@ -224,49 +159,6 @@ Use MCP servers to integrate your local system tools with your enterprise collab
 ```text
 > Organize my PDF invoices by month of expenditure.
 ```
-
-## Browser Edition Features
-
-The browser edition provides a complete web-based implementation of Gemini CLI:
-
-### Core Capabilities
-- **File System**: Full file management using Origin Private File System (OPFS)
-  - Create, read, write, and delete files
-  - Navigate directories
-  - Persistent storage across browser sessions
-- **Terminal Emulation**: Powered by xterm.js for authentic terminal experience
-- **Tool Support**: All file operation tools adapted for browser use
-  - ReadFile, WriteFile, Glob, Grep, and LS tools
-  - Limited shell command emulation
-
-### Browser-Specific Features
-- **No Installation**: Run directly in your browser
-- **Cross-Platform**: Works on any device with a modern browser
-- **Offline Capable**: All processing happens locally
-- **Theme Support**: Built-in dark and light themes
-- **Responsive Design**: Adapts to different screen sizes
-
-### Architecture
-The browser edition uses a platform abstraction layer that allows the same codebase to run in both Node.js and browser environments:
-
-```typescript
-// Automatic platform detection
-const platform = PlatformFactory.create();
-const fileSystem = platform.createFileSystem();
-
-// Same API works in both environments
-await fileSystem.writeFile('/test.txt', 'Hello, Browser!');
-const content = await fileSystem.readFile('/test.txt');
-```
-
-### Limitations
-Due to browser security restrictions:
-- Shell commands are limited to a basic subset
-- Git operations are not available (can be added with isomorphic-git)
-- Cannot access files outside the OPFS sandbox
-- Network requests subject to CORS policies
-
-For more details, see the [Browser Edition documentation](./packages/browser/README.md).
 
 ### Uninstall
 
